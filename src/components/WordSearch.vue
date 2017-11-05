@@ -18,7 +18,7 @@
       <h2>Word List</h2>
       <ul class="word-list">
         <!-- TODO: Add transition-group around the list item here to animate items in the word list. -->
-          <li v-for="word in wordList" v-bind:key="word">{{ word }}&nbsp;<button v-on:click="removeWord(word)" class="remove-word">x</button></li>
+          <li v-for="word in wordList">{{ word }}&nbsp;<button v-on:click="removeWord(word)" class="remove-word">x</button></li>
       </ul>
     </div>
     <div class="results-container">
@@ -27,7 +27,7 @@
       <h2 v-if="results && results.length > 0">{{ results.length }} Words Found</h2>
       <ul v-if="results && results.length > 0" class="results">
         <!-- TODO: Add transition-group around the list item here to animate items in the results list. -->
-          <li v-for="item in results" class="item" v-bind:key="item.word">
+          <li v-for="item in results" class="item">
             <p class="result-word">{{ item.word }}</p>
             <p><button v-on:click="addWord(item.word)" class="add-word">Add to WordList</button></p>
           </li>
