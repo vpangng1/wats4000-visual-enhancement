@@ -23,7 +23,6 @@
     </div>
     <div class="results-container">
       <!-- TODO: Add spinner here to show when search is in progress. -->
-      <spinner v-if="showSpinner"></spinner>
       <h2 v-if="results && results.length > 0">{{ results.length }} Words Found</h2>
       <ul v-if="results && results.length > 0" class="results">
         <!-- TODO: Add transition-group around the list item here to animate items in the results list. -->
