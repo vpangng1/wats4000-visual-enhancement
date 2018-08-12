@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="messages">
-      <!-- TODO: Add message-container and supply messages property. -->
+      <message-container v-bind:messages="messages"></message-container>
     </div>
     <div class="word-search">
       <form v-on:submit.prevent="findWords">
@@ -17,7 +17,7 @@
     <div class="word-list-container">
       <h2>Word List</h2>
       <ul class="word-list">
-        <!-- TODO: Add transition-group around the list item here to animate items in the word list. -->
+
         <transition-group name="slideRight" tag="div" appear>
           <li v-for="word in wordList" v-bind:key="word">{{ word }}&nbsp;<button v-on:click="removeWord(word)" class="remove-word">x</button></li>
         </transition-group>
@@ -35,8 +35,10 @@
             </li>
          </transition-group> 
       </ul>
-      <!-- TODO: Add message to display here if no results are found. -->
-
+      <div v-if="results && results.length === 0" class="no-results">
+        <h2>No Words Found</h2>
+        <p>Please enter new search parameters.</p>
+      </div>
 
     </div>
   </div>
@@ -47,14 +49,13 @@ import axios from 'axios';
 // Note: vue2-animate is added using the require statement because it is a CSS file
 require('vue2-animate/dist/vue2-animate.min.css');
 import CubeSpinner from '@/components/CubeSpinner';
-// TODO: Import MessageContainer for use as a child component
-
+import MessageContainer from '@/components/MessageContainer';
 
 export default {
   name: 'WordSearch',
   components: {
-    // TODO: Define child components here.
-    spinner: CubeSpinner
+    spinner: CubeSpinner,
+    'message-container': MessageContainer
 
   },
   data () {
@@ -74,18 +75,31 @@ export default {
       if (this.wordList.indexOf(word) === -1) {
         this.wordList.push(word);
         console.log(`Added ${word} to wordList.`);
-        // TODO: Add message to this.messages to reflect this change.
+        
+        let message = {
+          type: 'success',
+          text: `${word} successfully added to Word List.`
+        };
+        this.messages.push(message);
 
       } else {
         console.log('Word is already on wordlist.');
-        // TODO: Add message to this.messages to reflect this change.
+
+        let message = {
+          type: 'info',
+          text: `${word} is already added to Word List.`
+        };
+        this.messages.push(message);
 
       }
     },
     removeWord: function (word) {
       this.wordList.splice(this.wordList.indexOf(word), 1);
-      // TODO: Add message to this.messages to reflect this change.
-
+        let message = {
+          type: 'success',
+          text: `${word} successfully removed from the Word List.`
+        };
+        this.messages.push(message);
     },
     findWords: function() {
     this.showSpinner = true;
@@ -104,8 +118,12 @@ export default {
       .catch( error => {
         this.showSpinner = false;
 
-        // TODO: Add message to this.messages to display the errors.
 
+        let message = {
+          type: 'error',
+          text: error.message
+        };
+        this.messages.push(message);
       })
     }
   }
