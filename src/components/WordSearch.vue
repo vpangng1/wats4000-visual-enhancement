@@ -18,18 +18,22 @@
       <h2>Word List</h2>
       <ul class="word-list">
         <!-- TODO: Add transition-group around the list item here to animate items in the word list. -->
-          <li v-for="word in wordList">{{ word }}&nbsp;<button v-on:click="removeWord(word)" class="remove-word">x</button></li>
+        <transition-group name="slideRight" tag="div" appear>
+          <li v-for="word in wordList" v-bind:key="word">{{ word }}&nbsp;<button v-on:click="removeWord(word)" class="remove-word">x</button></li>
+        </transition-group>
       </ul>
     </div>
     <div class="results-container">
-      <!-- TODO: Add spinner here to show when search is in progress. -->
+
+      <spinner v-if="showSpinner"></spinner>
       <h2 v-if="results && results.length > 0">{{ results.length }} Words Found</h2>
       <ul v-if="results && results.length > 0" class="results">
-        <!-- TODO: Add transition-group around the list item here to animate items in the results list. -->
-          <li v-for="item in results" class="item">
-            <p class="result-word">{{ item.word }}</p>
-            <p><button v-on:click="addWord(item.word)" class="add-word">Add to WordList</button></p>
-          </li>
+        <transition-group name="fade" tag="div" appear>
+            <li v-for="item in results" class="item" v-bind:key="item.word">
+              <p class="result-word">{{ item.word }}</p>
+              <p><button v-on:click="addWord(item.word)" class="add-word">Add to WordList</button></p>
+            </li>
+         </transition-group> 
       </ul>
       <!-- TODO: Add message to display here if no results are found. -->
 
@@ -42,7 +46,7 @@
 import axios from 'axios';
 // Note: vue2-animate is added using the require statement because it is a CSS file
 require('vue2-animate/dist/vue2-animate.min.css');
-// TODO: Import CubeSpinner for use as a child component
+import CubeSpinner from '@/components/CubeSpinner';
 // TODO: Import MessageContainer for use as a child component
 
 
@@ -50,6 +54,7 @@ export default {
   name: 'WordSearch',
   components: {
     // TODO: Define child components here.
+    spinner: CubeSpinner
 
   },
   data () {
@@ -83,7 +88,7 @@ export default {
 
     },
     findWords: function() {
-      // TODO: Show spinner when API request begins here.
+    this.showSpinner = true;
       this.results = null;
       axios.get('https://api.datamuse.com/words', {
         params: {
@@ -93,11 +98,11 @@ export default {
         }
       })
       .then( response => {
-        // TODO: Turn off spinner.
+        this.showSpinner = false;
         this.results = response.data;
       })
       .catch( error => {
-        // TODO: Turn off spinner
+        this.showSpinner = false;
 
         // TODO: Add message to this.messages to display the errors.
 
